@@ -11,6 +11,7 @@ app.use(fileUpload({
     tempFileDir: './uploads'
 }));
 
+
 // routes
 app.use(postsRoutes);
 
