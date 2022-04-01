@@ -19,7 +19,7 @@ export const createPost = async (req, res) => {
 
         let image;
 
-        if(req.files?.image){
+        if (req.files?.image) {
             const result = await uploadImage(req.files.image.tempFilePath);
 
             // Para borrar el archivo temporal
@@ -51,18 +51,19 @@ export const updatePost = async (req, res) => {
 };
 
 // Borrar un post
-export const deletePost = async (req, res) => {
+export const removePost = async (req, res) => {
     try {
-        const postRemoved = await Post.findOneAndDelete(req.params.id);
-        if (!postRemoved) return res.sendStatus(404);
+        const { id } = req.params;
+        const post = await Post.findByIdAndDelete(id);
 
-        if(postRemoved.image.public_id){
-            await deleteImage(postRemoved.image.public_id);
+        if (post && post.image.public_id) {
+            await deleteImage(post.image.public_id);
         }
 
-        return res.sendStatus(204);
+        if (!post) return res.sendStatus(404);
+        res.sendStatus(204);
     } catch (error) {
-        return res.status(500).json({ message: error.message });
+        return res.status(500).json({ message: error.message })
     }
 };
 
